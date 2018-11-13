@@ -58,11 +58,28 @@ class CDSMap extends API {
 		this.getData(lat, lng).then((response) => {
 			panel.innerHTML = '';
 			if(response.status=="OK") {
+
+				let descriptor = document.createElement('div');
+					descriptor.id = `cds-descriptor`;
+					descriptor.className = 'cds-detail';
+					descriptor.innerHTML = `<h2 class="cds-detail-title">Please note</h2>`;
+
+				if(this.isDark(response)) {
+					this.setNightMap();
+					descriptor.innerHTML = `<h2 class="cds-detail-title">It is currently dark</h2>`;
+
+				} else {
+					this.removeNightMap();
+					descriptor.innerHTML = `<h2 class="cds-detail-title">It is currently Light</h2>`;
+				}
+
+				panel.appendChild(descriptor);
+
 				
 				var detail = document.createElement('div');
 					detail.id = `cds-info`;
 					detail.className = 'cds-detail';
-					detail.innerHTML = `<h2 class="cds-detail-title">Please note</h2><span class="cds-detail-content">The map will change to Dark/Light mode depending on the sunrise and sunset times of your chosen location.</span>`;
+					detail.innerHTML = `<h2 class="cds-detail-title">Please note</h2><p class="cds-detail-content">The map will change to Dark/Light mode depending on the sunrise and sunset times of your chosen location.</p>`;
 				panel.appendChild(detail);
 				
 				var results = response.results;
@@ -73,14 +90,8 @@ class CDSMap extends API {
 					let detail = document.createElement('div');
 						detail.id = `cds-${prop}`;
 						detail.className = 'cds-detail';
-						detail.innerHTML = `<h2 class="cds-detail-title">${title}</h2><span class="cds-detail-content">${date}</span>`;
+						detail.innerHTML = `<h2 class="cds-detail-title">${title}</h2><p class="cds-detail-content">${date}</p>`;
 					panel.appendChild(detail)
-				}
-
-				if(this.isDark(response)) {
-					this.setNightMap();
-				} else {
-					this.removeNightMap();
 				}
 			} else {
 				alert("We got an error from the API");
